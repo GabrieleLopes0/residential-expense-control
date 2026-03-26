@@ -66,6 +66,8 @@ public class PessoaController : ControllerBase
         if (pessoa == null)
             return NotFound("Pessoa não encontrada");
 
+        transacoes.RemoveAll(t => t.PessoaId == id);
+        
         pessoas.Remove(pessoa);
 
         return NoContent();

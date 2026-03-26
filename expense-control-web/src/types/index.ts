@@ -4,6 +4,12 @@ export interface Pessoa {
   idade: number;
 }
 
+export interface Categoria {
+  id: number;
+  descricao: string;
+  finalidade: number;
+}
+
 export interface Transacao {
   id: number;
   descricao: string;

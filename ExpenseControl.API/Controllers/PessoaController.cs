@@ -70,4 +70,28 @@ public class PessoaController : ControllerBase
 
         return NoContent();
     }
+    // GET TOTAIS
+    [HttpGet("totais")]
+    public IActionResult GetTotais()
+    {
+        var resultado = pessoas.Select(p => new
+        {
+            Pessoa = p.Nome,
+            TotalReceitas = transacoes
+                .Where(t => t.PessoaId == p.Id && t.Tipo == TipoTransacao.Receita)
+                .Sum(t => t.Valor),
+
+            TotalDespesas = transacoes
+                .Where(t => t.PessoaId == p.Id && t.Tipo == TipoTransacao.Despesa)
+                .Sum(t => t.Valor)
+        }).Select(r => new
+        {
+            r.Pessoa,
+            r.TotalReceitas,
+            r.TotalDespesas,
+            Saldo = r.TotalReceitas - r.TotalDespesas
+        });
+
+        return Ok(resultado);
+    }
 }

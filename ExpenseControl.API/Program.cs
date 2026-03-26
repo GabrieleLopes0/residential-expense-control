@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ExpenseControl.API.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ExpenseDbContext>(options =>
+    options.UseSqlite("Data Source=expense.db"));
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();

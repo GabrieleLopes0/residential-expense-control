@@ -1,6 +1,11 @@
-public class Pessoa
+namespace ExpenseControl.API.Entities
 {
-    public int Id { get; set; }
-    public string Nome { get; set; }
-    public int Idade { get; set; }
+    public class Pessoa
+    {
+        public int Id { get; set; }
+
+        public string Nome { get; set; } = string.Empty;
+
+        public int Idade { get; set; }
+    }
 }

@@ -1,13 +1,18 @@
-public enum Finalidade
+namespace ExpenseControl.API.Entities
 {
-    Receita,
-    Despesa,
-    Ambas
-}
+    public enum Finalidade
+    {
+        Receita,
+        Despesa,
+        Ambas
+    }
 
-public class Categoria
-{
-    public int Id { get; set; }
-    public string Descricao { get; set; } = string.Empty;
-    public Finalidade Finalidade { get; set; }
+    public class Categoria
+    {
+        public int Id { get; set; }
+
+        public string Descricao { get; set; } = string.Empty;
+
+        public Finalidade Finalidade { get; set; }
+    }
 }

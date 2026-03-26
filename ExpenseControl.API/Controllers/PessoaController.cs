@@ -1,100 +1,93 @@
 using Microsoft.AspNetCore.Mvc;
+using ExpenseControl.API.Entities;
+using ExpenseControl.API.Data;
 
-[ApiController]
-[Route("api/[controller]")]
-public class PessoaController : ControllerBase
+namespace ExpenseControl.API.Controllers
 {
-    public static List<Pessoa> pessoas = new List<Pessoa>();
-    public static List<Transacao> transacoes = new List<Transacao>();
-    private static int id = 1;
-
-    // GET: api/pessoa
-    [HttpGet]
-    public IActionResult Get()
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PessoaController : ControllerBase
     {
-        return Ok(pessoas);
-    }
+        private readonly ExpenseDbContext _context;
 
-    // GET: api/pessoa/1
-    [HttpGet("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var pessoa = pessoas.FirstOrDefault(p => p.Id == id);
-
-        if (pessoa == null)
-            return NotFound("Pessoa não encontrada");
-
-        return Ok(pessoa);
-    }
-
-    // POST: api/pessoa
-    [HttpPost]
-    public IActionResult Create([FromBody] Pessoa pessoa)
-    {
-        if (string.IsNullOrEmpty(pessoa.Nome) || pessoa.Nome.Length > 200)
-            return BadRequest("Nome inválido");
-
-        pessoa.Id = id++;
-        pessoas.Add(pessoa);
-
-        return CreatedAtAction(nameof(GetById), new { id = pessoa.Id }, pessoa);
-    }
-
-    // PUT: api/pessoa/1
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Pessoa pessoaAtualizada)
-    {
-        var pessoa = pessoas.FirstOrDefault(p => p.Id == id);
-
-        if (pessoa == null)
-            return NotFound("Pessoa não encontrada");
-
-        if (string.IsNullOrEmpty(pessoaAtualizada.Nome) || pessoaAtualizada.Nome.Length > 200)
-            return BadRequest("Nome inválido");
-
-        pessoa.Nome = pessoaAtualizada.Nome;
-        pessoa.Idade = pessoaAtualizada.Idade;
-
-        return Ok(pessoa);
-    }
-
-    // DELETE: api/pessoa/1
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
-    {
-        var pessoa = pessoas.FirstOrDefault(p => p.Id == id);
-
-        if (pessoa == null)
-            return NotFound("Pessoa não encontrada");
-
-        transacoes.RemoveAll(t => t.PessoaId == id);
-
-        pessoas.Remove(pessoa);
-
-        return NoContent();
-    }
-    // GET TOTAIS
-    [HttpGet("totais")]
-    public IActionResult GetTotais()
-    {
-        var resultado = pessoas.Select(p => new
+        public PessoaController(ExpenseDbContext context)
         {
-            Pessoa = p.Nome,
-            TotalReceitas = transacoes
-                .Where(t => t.PessoaId == p.Id && t.Tipo == TipoTransacao.Receita)
-                .Sum(t => t.Valor),
+            _context = context;
+        }
 
-            TotalDespesas = transacoes
-                .Where(t => t.PessoaId == p.Id && t.Tipo == TipoTransacao.Despesa)
-                .Sum(t => t.Valor)
-        }).Select(r => new
+        [HttpGet]
+        public IActionResult Get()
         {
-            r.Pessoa,
-            r.TotalReceitas,
-            r.TotalDespesas,
-            Saldo = r.TotalReceitas - r.TotalDespesas
-        });
+            var pessoas = _context.Pessoas.ToList();
+            return Ok(pessoas);
+        }
 
-        return Ok(resultado);
+        [HttpPost]
+        public IActionResult Post([FromBody] Pessoa pessoa)
+        {
+            _context.Pessoas.Add(pessoa);
+            _context.SaveChanges();
+
+            return Ok(pessoa);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Pessoa pessoaAtualizada)
+        {
+            var pessoa = _context.Pessoas.Find(id);
+
+            if (pessoa == null)
+                return NotFound();
+
+            pessoa.Nome = pessoaAtualizada.Nome;
+            pessoa.Idade = pessoaAtualizada.Idade;
+
+            _context.SaveChanges();
+
+            return Ok(pessoa);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var pessoa = _context.Pessoas.Find(id);
+
+            if (pessoa == null)
+                return NotFound();
+
+            var transacoes = _context.Transacoes.Where(t => t.PessoaId == id);
+            _context.Transacoes.RemoveRange(transacoes);
+
+            _context.Pessoas.Remove(pessoa);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpGet("totais")]
+        public IActionResult GetTotais()
+        {
+            var resultado = _context.Pessoas
+                .Select(p => new
+                {
+                    Pessoa = p.Nome,
+                    TotalReceitas = _context.Transacoes
+                        .Where(t => t.PessoaId == p.Id && t.Tipo == TipoTransacao.Receita)
+                        .Sum(t => (decimal?)t.Valor) ?? 0,
+
+                    TotalDespesas = _context.Transacoes
+                        .Where(t => t.PessoaId == p.Id && t.Tipo == TipoTransacao.Despesa)
+                        .Sum(t => (decimal?)t.Valor) ?? 0
+                })
+                .Select(r => new
+                {
+                    r.Pessoa,
+                    r.TotalReceitas,
+                    r.TotalDespesas,
+                    Saldo = r.TotalReceitas - r.TotalDespesas
+                });
+
+            return Ok(resultado);
+        }
     }
 }

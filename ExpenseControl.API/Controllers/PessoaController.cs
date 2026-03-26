@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class PessoaController : ControllerBase
 {
-    private static List<Pessoa> pessoas = new List<Pessoa>();
+    public static List<Pessoa> pessoas = new List<Pessoa>();
+    public static List<Transacao> transacoes = new List<Transacao>();
     private static int id = 1;
 
     // GET: api/pessoa
@@ -67,7 +68,7 @@ public class PessoaController : ControllerBase
             return NotFound("Pessoa não encontrada");
 
         transacoes.RemoveAll(t => t.PessoaId == id);
-        
+
         pessoas.Remove(pessoa);
 
         return NoContent();

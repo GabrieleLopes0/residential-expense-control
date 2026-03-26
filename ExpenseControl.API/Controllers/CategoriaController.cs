@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
+
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriaController : ControllerBase
 {
-    private static List<Categoria> categorias = new List<Categoria>();
+    public static List<Categoria> categorias = new List<Categoria>();
     private static int id = 1;
 
     // GET

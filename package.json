@@ -1,0 +1,24 @@
+{
+  "name": "residential-expense-control",
+  "version": "1.0.0",
+  "description": "Sistema de controle de gastos residenciais desenvolvido com .NET (Web API) e React + TypeScript, permitindo o gerenciamento de pessoas, categorias e transações, além da visualização de totais por pessoa.",
+  "main": "eslint.config.js",
+  "scripts": {
+  "start": "concurrently \"cd ExpenseControl.API && dotnet run\" \"cd expense-control-web && npm run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrieleLopes0/residential-expense-control.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GabrieleLopes0/residential-expense-control/issues"
+  },
+  "homepage": "https://github.com/GabrieleLopes0/residential-expense-control#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

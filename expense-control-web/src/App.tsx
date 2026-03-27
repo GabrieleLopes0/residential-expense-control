@@ -1,4 +1,4 @@
-// src/App.tsx
+// Componente principal com rotas da aplicação
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
@@ -10,10 +10,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
-        {/* Header simples */}
-        <header className="bg-blue-500 text-white p-4 text-xl font-bold">
-          Minha Casa
-        </header>
+
 
         <main className="p-4">
           <Routes>

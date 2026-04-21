@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ExpenseControl.API/Dockerfile
+    ports:
+      - '5285:80'
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+  web:
+    build:
+      context: expense-control-web
+      dockerfile: Dockerfile
+    ports:
+      - '5173:80'
+    depends_on:
+      - api

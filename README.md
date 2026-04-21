@@ -58,6 +58,23 @@ Esse comando inicia o back-end e o front-end ao mesmo tempo. Depois e so abrir o
 - **Frontend:** http://localhost:5173
 - **API (Swagger):** http://localhost:5285/swagger
 
+### Executando com Docker
+
+Caso prefira rodar usando Docker, o repositório agora inclui Dockerfiles para o backend e o frontend, além de um `docker-compose.yml` na raiz.
+
+Na raiz do projeto, execute:
+
+```bash
+docker compose up --build
+```
+
+Depois acesse:
+
+- **Frontend:** http://localhost:5173
+- **API:** http://localhost:5285
+
+> No modo Docker, o backend é exposto na porta 5285 e o frontend na porta 5173.
+
 ## Paginas
 
 ### Dashboard
